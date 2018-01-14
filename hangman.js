@@ -35,14 +35,14 @@ function startGame(){
      // show the masked word
      console.log(newWord.wordDisplay);
      console.log(guessesRemaining + " guesses remaining");
-     guessWord();
+     guessMyWord();
     } else {
       console.log("Ok, bye");
     }
   });
 }
 
-function guessWord() {
+function guessMyWord() {
   inquirer.prompt([
     {
      name: "guess",
@@ -70,7 +70,7 @@ function guessWord() {
           startGame();
           return;
         }        
-        guessWord();
+        guessMyWord();
 
 
       } else if (response.guess.indexOf(currentWord) < 0 && guessesRemaining > 0) {
@@ -80,7 +80,7 @@ function guessWord() {
         guessesRemaining--;
         console.log(guessesRemaining + " guesses remaining!");
 
-        guessWord();
+        guessMyWord();
 
       } else{        
         console.log("game over!");
