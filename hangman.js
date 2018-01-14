@@ -3,21 +3,23 @@ var Word = require('./word.js')
 var Game = require('./game.js');
 
 var hangmanWords = Game.newWord.wordList;
-
 var randomIndex = Math.floor(Math.random() * hangmanWords.length);
-
-
 var currentWord = hangmanWords[randomIndex];
 
-console.log(currentWord);
 
 var guessesRemaining = 12;
-
 var wrongGuesses = [];
-
 var newWord = {};
 
+
 function startGame(){
+
+  guessesRemaining = 12;
+
+  hangmanWords = Game.newWord.wordList;
+  randomIndex = Math.floor(Math.random() * hangmanWords.length);
+  currentWord = hangmanWords[randomIndex];  
+
   inquirer.prompt([
   {
     name:"playgame",
@@ -30,7 +32,7 @@ function startGame(){
      newWord = new Word(currentWord);
      console.log("Let's Play!!!!!!") ;
      console.log("*****************") ;    
-     console.log(newWord.currentword);
+     // show the masked word
      console.log(newWord.wordDisplay);
      console.log(guessesRemaining + " guesses remaining");
      guessWord();
@@ -40,43 +42,50 @@ function startGame(){
   });
 }
 
-function chooseWord() {
-  return hangmanWords[(Math.floor(Math.random) * hangmanWords.length)];
-};
-
 function guessWord() {
   inquirer.prompt([
     {
      name: "guess",
      type: "input",
-     message: "Guess a letter" 
+     message: "Pick a letter a-z" 
     }
     ]).then(function(response){ 
       if(currentWord.indexOf(response.guess)!== -1 && guessesRemaining > 0){
-        // var newLetter = new Letter(response.guess);
         for (index in newWord.letterArray) {
           if(response.guess === newWord.letterArray[index].guess) {
             var newLetter = newWord.letterArray[index];
             newLetter.letterGuessed = true;
             newLetter.letterCheck();
-            console.log(newLetter);
+            console.log("Yes!  There is a/an " + response.guess + "!");
           }
         }
         newWord.displayWord();
         console.log(newWord.wordDisplay);
         guessesRemaining--;
         console.log(guessesRemaining + " guesses remaining!");
-        guessWord();
-      } else if (response.guess.indexOf(currentWord) < 0 && guessesRemaining > 0) {
-        console.log("Wrong Answer!");
-        wrongGuesses.push(response.guess);
-        guessesRemaining--;
+
+        if (!newWord.wordDisplay.includes("_")) {
+          // if there are no unguessed letters then the word was guessed
+          console.log("you win!!");
+          startGame();
+          return;
+        }        
         guessWord();
 
-      } else{
-        return;
+
+      } else if (response.guess.indexOf(currentWord) < 0 && guessesRemaining > 0) {
+        console.log("No, Sorry!  There is no " + response.guess + "!");
+        wrongGuesses.push(response.guess);
+        console.log(newWord.wordDisplay);
+        guessesRemaining--;
+        console.log(guessesRemaining + " guesses remaining!");
+
+        guessWord();
+
+      } else{        
         console.log("game over!");
         startGame();
+        return;
       }
     })
   }
