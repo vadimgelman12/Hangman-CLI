@@ -2,9 +2,9 @@ var inquirer = require('inquirer')
 var Word = require('./word.js')
 var Game = require('./game.js');
 
-var hangmanWords = Game.newWord.wordList;
-var randomIndex = Math.floor(Math.random() * hangmanWords.length);
-var currentWord = hangmanWords[randomIndex];
+var hangmanWords = [];
+var randomIndex = 0;
+var currentWord = "";
 
 
 var guessesRemaining = 12;
